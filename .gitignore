@@ -1,0 +1,14 @@
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.*
+
+# API keys and credentials
+*.key
+*.pem
+*.p12
+*.json
+!package.json
+!package-lock.json
