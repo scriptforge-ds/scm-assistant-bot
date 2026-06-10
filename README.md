@@ -19,8 +19,8 @@ https://github.com/scriptforge-ds/scm-assistant-bot
 
 | Config | Chunk Size | Overlap | PDF Chunks | CSV Chunks |
 |--------|------------|---------|------------|------------|
-| A      | 500        | 50      | 35         | NA        |
-| B      | 1000       | 200     | 18         | NA        |
+| A      | 500        | 50      | 35         | NA         |
+| B      | 1000       | 200     | 18         | NA         |
 
 **Selected:** Config B
 
