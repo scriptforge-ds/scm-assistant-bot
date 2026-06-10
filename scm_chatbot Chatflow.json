@@ -1,0 +1,881 @@
+{
+  "nodes": [
+    {
+      "id": "toolAgent_0",
+      "position": {
+        "x": -851.1720349556007,
+        "y": 197.03973693299758
+      },
+      "type": "customNode",
+      "data": {
+        "id": "toolAgent_0",
+        "label": "Tool Agent",
+        "version": 2,
+        "name": "toolAgent",
+        "type": "AgentExecutor",
+        "baseClasses": [
+          "AgentExecutor",
+          "BaseChain",
+          "Runnable"
+        ],
+        "category": "Agents",
+        "description": "Agent that uses Function Calling to pick the tools and args to call",
+        "inputParams": [
+          {
+            "label": "System Message",
+            "name": "systemMessage",
+            "type": "string",
+            "default": "You are a helpful AI assistant.",
+            "description": "If Chat Prompt Template is provided, this will be ignored",
+            "rows": 4,
+            "optional": true,
+            "additionalParams": true,
+            "id": "toolAgent_0-input-systemMessage-string",
+            "display": true
+          },
+          {
+            "label": "Max Iterations",
+            "name": "maxIterations",
+            "type": "number",
+            "optional": true,
+            "additionalParams": true,
+            "id": "toolAgent_0-input-maxIterations-number",
+            "display": true
+          },
+          {
+            "label": "Enable Detailed Streaming",
+            "name": "enableDetailedStreaming",
+            "type": "boolean",
+            "default": false,
+            "description": "Stream detailed intermediate steps during agent execution",
+            "optional": true,
+            "additionalParams": true,
+            "id": "toolAgent_0-input-enableDetailedStreaming-boolean",
+            "display": true
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Tools",
+            "name": "tools",
+            "type": "Tool",
+            "list": true,
+            "id": "toolAgent_0-input-tools-Tool",
+            "display": true
+          },
+          {
+            "label": "Memory",
+            "name": "memory",
+            "type": "BaseChatMemory",
+            "id": "toolAgent_0-input-memory-BaseChatMemory",
+            "display": true
+          },
+          {
+            "label": "Tool Calling Chat Model",
+            "name": "model",
+            "type": "BaseChatModel",
+            "description": "Only compatible with models that are capable of function calling: ChatOpenAI, ChatMistral, ChatAnthropic, ChatGoogleGenerativeAI, ChatVertexAI, GroqChat",
+            "id": "toolAgent_0-input-model-BaseChatModel",
+            "display": true
+          },
+          {
+            "label": "Chat Prompt Template",
+            "name": "chatPromptTemplate",
+            "type": "ChatPromptTemplate",
+            "description": "Override existing prompt with Chat Prompt Template. Human Message must includes {input} variable",
+            "optional": true,
+            "id": "toolAgent_0-input-chatPromptTemplate-ChatPromptTemplate",
+            "display": true
+          },
+          {
+            "label": "Input Moderation",
+            "description": "Detect text that could generate harmful output and prevent it from being sent to the language model",
+            "name": "inputModeration",
+            "type": "Moderation",
+            "optional": true,
+            "list": true,
+            "id": "toolAgent_0-input-inputModeration-Moderation",
+            "display": true
+          }
+        ],
+        "inputs": {
+          "tools": [
+            "{{retrieverTool_0.data.instance}}",
+            "{{ChatflowTool_0.data.instance}}"
+          ],
+          "memory": "{{bufferWindowMemory_0.data.instance}}",
+          "model": "{{chatGoogleGenerativeAI_0.data.instance}}",
+          "chatPromptTemplate": "",
+          "systemMessage": "You are a query routing and synthesis assistant.\n\nYour responsibilities are to:\n\n1. Understand the user's intent.\n2. Select the appropriate tool or combination of tools.\n3. Formulate effective retrieval queries.\n4. Synthesize tool outputs into a complete answer.\n\nYou do not rely on your own knowledge. Use available tools to gather information and base all responses on tool outputs.\n\nAvailable tools:\n\n* policy_retriever: governance policies, thresholds, definitions, eligibility criteria, restrictions, and response procedures.\n* data_retriever: supplier records, performance metrics, spend, PO values, supplier tiers, risk indicators, disruptions, defects, and operational data.\n\nTool selection:\n\n* Use policy_retriever for questions about rules, definitions, thresholds, limits, eligibility criteria, or policy interpretation.\n* Use data_retriever for questions about suppliers, metrics, counts, rankings, averages, totals, trends, or records.\n* Use both tools when a question requires supplier data to be evaluated against a policy.\n\nRetrieval rules:\n\n* Construct retrieval queries that capture the full user intent.\n* Include all relevant entities, metrics, filters, conditions, and comparisons.\n* Retrieve all information needed to answer the question in as few tool calls as possible.\n\nAnswering:\n\n* Base responses only on tool results.\n* Do not invent facts, policies, thresholds, or supplier data.\n* If information is unavailable, state that clearly.\n* Provide concise, direct answers.",
+          "inputModeration": "",
+          "maxIterations": "",
+          "enableDetailedStreaming": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "toolAgent_0-output-toolAgent-AgentExecutor|BaseChain|Runnable",
+            "name": "toolAgent",
+            "label": "AgentExecutor",
+            "description": "Agent that uses Function Calling to pick the tools and args to call",
+            "type": "AgentExecutor | BaseChain | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 489,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -851.1720349556007,
+        "y": 197.03973693299758
+      },
+      "dragging": false
+    },
+    {
+      "id": "retrieverTool_0",
+      "position": {
+        "x": -1652.7883887017758,
+        "y": -591.8846669190636
+      },
+      "type": "customNode",
+      "data": {
+        "id": "retrieverTool_0",
+        "label": "Retriever Tool",
+        "version": 3,
+        "name": "retrieverTool",
+        "type": "RetrieverTool",
+        "baseClasses": [
+          "RetrieverTool",
+          "DynamicTool",
+          "Tool",
+          "StructuredTool",
+          "Runnable"
+        ],
+        "category": "Tools",
+        "description": "Use a retriever as allowed tool for agent",
+        "inputParams": [
+          {
+            "label": "Retriever Name",
+            "name": "name",
+            "type": "string",
+            "placeholder": "search_state_of_union",
+            "id": "retrieverTool_0-input-name-string",
+            "display": true
+          },
+          {
+            "label": "Retriever Description",
+            "name": "description",
+            "type": "string",
+            "description": "When should agent uses to retrieve documents",
+            "rows": 3,
+            "placeholder": "Searches and returns documents regarding the state-of-the-union.",
+            "id": "retrieverTool_0-input-description-string",
+            "display": true
+          },
+          {
+            "label": "Return Source Documents",
+            "name": "returnSourceDocuments",
+            "type": "boolean",
+            "optional": true,
+            "id": "retrieverTool_0-input-returnSourceDocuments-boolean",
+            "display": true
+          },
+          {
+            "label": "Additional Metadata Filter",
+            "name": "retrieverToolMetadataFilter",
+            "type": "json",
+            "description": "Add additional metadata filter on top of the existing filter from vector store",
+            "optional": true,
+            "additionalParams": true,
+            "hint": {
+              "label": "What can you filter?",
+              "value": "Add additional filters to vector store. You can also filter with flow config, including the current \"state\":\n- `$flow.sessionId`\n- `$flow.chatId`\n- `$flow.chatflowId`\n- `$flow.input`\n- `$flow.state`\n"
+            },
+            "acceptVariable": true,
+            "id": "retrieverTool_0-input-retrieverToolMetadataFilter-json",
+            "display": true
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Retriever",
+            "name": "retriever",
+            "type": "BaseRetriever",
+            "id": "retrieverTool_0-input-retriever-BaseRetriever",
+            "display": true
+          }
+        ],
+        "inputs": {
+          "name": "policy_retriever",
+          "description": "Use this tool to look up governance rules, policy thresholds, compliance requirements, contractual definitions, and procedural guidelines from the supplier policy document.\n\nUse this when the question involves:\n- Classification rules, tier definitions, or eligibility criteria\n- Performance thresholds, limits, or minimum requirements\n- Penalty, incentive, or rebate program conditions\n- Risk definitions, escalation procedures, or response protocols\n- Audit requirements, scoring methodology, or overdue classifications\n- Certification requirements or sustainability standards\n- Concentration limits, diversification rules, or alternate supplier conditions\n- Any \"what does the policy say about X\" type question",
+          "retriever": "{{documentStoreVS_0.data.instance}}",
+          "returnSourceDocuments": "",
+          "retrieverToolMetadataFilter": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable",
+            "name": "retrieverTool",
+            "label": "RetrieverTool",
+            "description": "Use a retriever as allowed tool for agent",
+            "type": "RetrieverTool | DynamicTool | Tool | StructuredTool | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 659,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -1652.7883887017758,
+        "y": -591.8846669190636
+      },
+      "dragging": false
+    },
+    {
+      "id": "documentStoreVS_0",
+      "position": {
+        "x": -2087.387072807761,
+        "y": -496.862610193577
+      },
+      "type": "customNode",
+      "data": {
+        "id": "documentStoreVS_0",
+        "label": "Document Store (Vector)",
+        "version": 1,
+        "name": "documentStoreVS",
+        "type": "DocumentStoreVS",
+        "baseClasses": [
+          "DocumentStoreVS"
+        ],
+        "category": "Vector Stores",
+        "description": "Search and retrieve documents from Document Store",
+        "inputParams": [
+          {
+            "label": "Select Store",
+            "name": "selectedStore",
+            "type": "asyncOptions",
+            "loadMethod": "listStores",
+            "id": "documentStoreVS_0-input-selectedStore-asyncOptions",
+            "display": true
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "selectedStore": "6162935a-7280-4999-afa4-fcb55ead7450"
+        },
+        "outputAnchors": [
+          {
+            "name": "output",
+            "label": "Output",
+            "type": "options",
+            "description": "",
+            "options": [
+              {
+                "id": "documentStoreVS_0-output-retriever-BaseRetriever",
+                "name": "retriever",
+                "label": "Retriever",
+                "description": "",
+                "type": "BaseRetriever"
+              },
+              {
+                "id": "documentStoreVS_0-output-vectorStore-VectorStore",
+                "name": "vectorStore",
+                "label": "Vector Store",
+                "description": "",
+                "type": "VectorStore"
+              }
+            ],
+            "default": "retriever"
+          }
+        ],
+        "outputs": {
+          "output": "retriever"
+        },
+        "selected": false
+      },
+      "width": 300,
+      "height": 316,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -2087.387072807761,
+        "y": -496.862610193577
+      },
+      "dragging": false
+    },
+    {
+      "id": "ChatflowTool_0",
+      "position": {
+        "x": -1258.8010864684966,
+        "y": -768.9035372334179
+      },
+      "type": "customNode",
+      "data": {
+        "id": "ChatflowTool_0",
+        "label": "Chatflow Tool",
+        "version": 5.1,
+        "name": "ChatflowTool",
+        "type": "ChatflowTool",
+        "baseClasses": [
+          "ChatflowTool",
+          "Tool"
+        ],
+        "category": "Tools",
+        "description": "Use as a tool to execute another chatflow",
+        "inputParams": [
+          {
+            "label": "Connect Credential",
+            "name": "credential",
+            "type": "credential",
+            "credentialNames": [
+              "chatflowApi"
+            ],
+            "optional": true,
+            "id": "ChatflowTool_0-input-credential-credential",
+            "display": true
+          },
+          {
+            "label": "Select Chatflow",
+            "name": "selectedChatflow",
+            "type": "asyncOptions",
+            "loadMethod": "listChatflows",
+            "id": "ChatflowTool_0-input-selectedChatflow-asyncOptions",
+            "display": true
+          },
+          {
+            "label": "Tool Name",
+            "name": "name",
+            "type": "string",
+            "id": "ChatflowTool_0-input-name-string",
+            "display": true
+          },
+          {
+            "label": "Tool Description",
+            "name": "description",
+            "type": "string",
+            "description": "Description of what the tool does. This is for LLM to determine when to use this tool.",
+            "rows": 3,
+            "placeholder": "State of the Union QA - useful for when you need to ask questions about the most recent state of the union address.",
+            "id": "ChatflowTool_0-input-description-string",
+            "display": true
+          },
+          {
+            "label": "Return Direct",
+            "name": "returnDirect",
+            "type": "boolean",
+            "optional": true,
+            "id": "ChatflowTool_0-input-returnDirect-boolean",
+            "display": true
+          },
+          {
+            "label": "Override Config",
+            "name": "overrideConfig",
+            "description": "Override the config passed to the Chatflow.",
+            "type": "json",
+            "optional": true,
+            "additionalParams": true,
+            "acceptVariable": true,
+            "id": "ChatflowTool_0-input-overrideConfig-json",
+            "display": true
+          },
+          {
+            "label": "Base URL",
+            "name": "baseURL",
+            "type": "string",
+            "description": "Base URL to Flowise. By default, it is the URL of the incoming request. Useful when you need to execute the Chatflow through an alternative route.",
+            "placeholder": "http://localhost:3000",
+            "optional": true,
+            "additionalParams": true,
+            "id": "ChatflowTool_0-input-baseURL-string",
+            "display": true
+          },
+          {
+            "label": "Start new session per message",
+            "name": "startNewSession",
+            "type": "boolean",
+            "description": "Whether to continue the session with the Chatflow tool or start a new one with each interaction. Useful for Chatflows with memory if you want to avoid it.",
+            "default": false,
+            "optional": true,
+            "additionalParams": true,
+            "id": "ChatflowTool_0-input-startNewSession-boolean",
+            "display": true
+          },
+          {
+            "label": "Use Question from Chat",
+            "name": "useQuestionFromChat",
+            "type": "boolean",
+            "description": "Whether to use the question from the chat as input to the chatflow. If turned on, this will override the custom input.",
+            "optional": true,
+            "additionalParams": true,
+            "id": "ChatflowTool_0-input-useQuestionFromChat-boolean",
+            "display": true
+          },
+          {
+            "label": "Custom Input",
+            "name": "customInput",
+            "type": "string",
+            "description": "Custom input to be passed to the chatflow. Leave empty to let LLM decides the input.",
+            "optional": true,
+            "additionalParams": true,
+            "show": {
+              "useQuestionFromChat": false
+            },
+            "id": "ChatflowTool_0-input-customInput-string",
+            "display": false
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "selectedChatflow": "6831c93c-c723-4a2f-af0e-9d42c993e77e",
+          "name": "data_retriever",
+          "description": "Use this tool to query supplier purchase order and performance data.\n\nUse this when the question involves:\n- Looking up, filtering, or listing specific suppliers and their attributes\n- Calculating totals, averages, counts, or rankings from the data\n- Comparing performance metrics across suppliers, regions, or categories\n- Identifying suppliers that meet or breach a particular threshold\n- Aggregating financial, operational, or compliance data by any dimension\n- Any question requiring actual numbers, names, or records from the dataset",
+          "returnDirect": "",
+          "overrideConfig": "",
+          "baseURL": "",
+          "startNewSession": "",
+          "useQuestionFromChat": "",
+          "customInput": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "ChatflowTool_0-output-ChatflowTool-ChatflowTool|Tool",
+            "name": "ChatflowTool",
+            "label": "ChatflowTool",
+            "description": "Use as a tool to execute another chatflow",
+            "type": "ChatflowTool | Tool"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 800,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -1258.8010864684966,
+        "y": -768.9035372334179
+      },
+      "dragging": false
+    },
+    {
+      "id": "bufferWindowMemory_0",
+      "position": {
+        "x": -1665.058812526032,
+        "y": 123.98367886500705
+      },
+      "type": "customNode",
+      "data": {
+        "id": "bufferWindowMemory_0",
+        "label": "Buffer Window Memory",
+        "version": 2,
+        "name": "bufferWindowMemory",
+        "type": "BufferWindowMemory",
+        "baseClasses": [
+          "BufferWindowMemory",
+          "BaseChatMemory",
+          "BaseMemory"
+        ],
+        "category": "Memory",
+        "description": "Uses a window of size k to surface the last k back-and-forth to use as memory",
+        "inputParams": [
+          {
+            "label": "Size",
+            "name": "k",
+            "type": "number",
+            "default": "4",
+            "description": "Window of size k to surface the last k back-and-forth to use as memory.",
+            "id": "bufferWindowMemory_0-input-k-number",
+            "display": true
+          },
+          {
+            "label": "Session Id",
+            "name": "sessionId",
+            "type": "string",
+            "description": "If not specified, a random id will be used. Learn <a target=\"_blank\" href=\"https://docs.flowiseai.com/memory#ui-and-embedded-chat\">more</a>",
+            "default": "",
+            "optional": true,
+            "additionalParams": true,
+            "id": "bufferWindowMemory_0-input-sessionId-string",
+            "display": true
+          },
+          {
+            "label": "Memory Key",
+            "name": "memoryKey",
+            "type": "string",
+            "default": "chat_history",
+            "additionalParams": true,
+            "id": "bufferWindowMemory_0-input-memoryKey-string",
+            "display": true
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "k": "0",
+          "sessionId": "",
+          "memoryKey": "chat_history"
+        },
+        "outputAnchors": [
+          {
+            "id": "bufferWindowMemory_0-output-bufferWindowMemory-BufferWindowMemory|BaseChatMemory|BaseMemory",
+            "name": "bufferWindowMemory",
+            "label": "BufferWindowMemory",
+            "description": "Uses a window of size k to surface the last k back-and-forth to use as memory",
+            "type": "BufferWindowMemory | BaseChatMemory | BaseMemory"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 335,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": -1665.058812526032,
+        "y": 123.98367886500705
+      }
+    },
+    {
+      "id": "chatGoogleGenerativeAI_0",
+      "position": {
+        "x": -2024.7555510456705,
+        "y": 24.327851681280947
+      },
+      "type": "customNode",
+      "data": {
+        "id": "chatGoogleGenerativeAI_0",
+        "label": "Google Gemini",
+        "version": 3.1,
+        "name": "chatGoogleGenerativeAI",
+        "type": "ChatGoogleGenerativeAI",
+        "baseClasses": [
+          "ChatGoogleGenerativeAI",
+          "ChatGoogleGenerativeAI",
+          "BaseChatModel",
+          "BaseLanguageModel",
+          "Runnable"
+        ],
+        "category": "Chat Models",
+        "description": "Wrapper around Google Gemini large language models that use the Chat endpoint",
+        "inputParams": [
+          {
+            "label": "Connect Credential",
+            "name": "credential",
+            "type": "credential",
+            "credentialNames": [
+              "googleGenerativeAI"
+            ],
+            "optional": false,
+            "description": "Google Generative AI credential.",
+            "id": "chatGoogleGenerativeAI_0-input-credential-credential",
+            "display": true
+          },
+          {
+            "label": "Model Name",
+            "name": "modelName",
+            "type": "asyncOptions",
+            "loadMethod": "listModels",
+            "default": "gemini-1.5-flash-latest",
+            "id": "chatGoogleGenerativeAI_0-input-modelName-asyncOptions",
+            "display": true
+          },
+          {
+            "label": "Custom Model Name",
+            "name": "customModelName",
+            "type": "string",
+            "placeholder": "gemini-1.5-pro-exp-0801",
+            "description": "Custom model name to use. If provided, it will override the model selected",
+            "additionalParams": true,
+            "optional": true,
+            "id": "chatGoogleGenerativeAI_0-input-customModelName-string",
+            "display": true
+          },
+          {
+            "label": "Temperature",
+            "name": "temperature",
+            "type": "number",
+            "step": 0.1,
+            "default": 0.9,
+            "optional": true,
+            "id": "chatGoogleGenerativeAI_0-input-temperature-number",
+            "display": true
+          },
+          {
+            "label": "Streaming",
+            "name": "streaming",
+            "type": "boolean",
+            "default": true,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatGoogleGenerativeAI_0-input-streaming-boolean",
+            "display": true
+          },
+          {
+            "label": "Allow Image Uploads",
+            "name": "allowImageUploads",
+            "type": "boolean",
+            "description": "Allow image input. Refer to the <a href=\"https://docs.flowiseai.com/using-flowise/uploads#image\" target=\"_blank\">docs</a> for more details.",
+            "default": false,
+            "optional": true,
+            "id": "chatGoogleGenerativeAI_0-input-allowImageUploads-boolean",
+            "display": true
+          },
+          {
+            "label": "Thinking Budget",
+            "name": "thinkingBudget",
+            "type": "number",
+            "description": "Guides the number of thinking tokens. -1 for dynamic, 0 to disable, or positive integer (Gemini 2.5 models).",
+            "step": 1,
+            "optional": true,
+            "additionalParams": true,
+            "show": {
+              "modelName": [
+                "gemini-2.5-pro",
+                "gemini-2.5-flash",
+                "gemini-2.5-flash-lite"
+              ]
+            },
+            "id": "chatGoogleGenerativeAI_0-input-thinkingBudget-number",
+            "display": true
+          },
+          {
+            "label": "Thinking Level",
+            "name": "thinkingLevel",
+            "type": "options",
+            "description": "Adjust the amount of reasoning effort based on the complexity of the user request",
+            "options": [
+              {
+                "label": "Low",
+                "name": "LOW"
+              },
+              {
+                "label": "Medium",
+                "name": "MEDIUM"
+              },
+              {
+                "label": "High",
+                "name": "HIGH"
+              }
+            ],
+            "optional": true,
+            "additionalParams": true,
+            "show": {
+              "modelName": [
+                "gemini-3.1-pro-preview",
+                "gemini-3.1-flash-lite-preview",
+                "gemini-3-flash-preview"
+              ]
+            },
+            "id": "chatGoogleGenerativeAI_0-input-thinkingLevel-options",
+            "display": false
+          },
+          {
+            "label": "Max Output Tokens",
+            "name": "maxOutputTokens",
+            "type": "number",
+            "step": 1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatGoogleGenerativeAI_0-input-maxOutputTokens-number",
+            "display": true
+          },
+          {
+            "label": "Top Probability",
+            "name": "topP",
+            "type": "number",
+            "step": 0.1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatGoogleGenerativeAI_0-input-topP-number",
+            "display": true
+          },
+          {
+            "label": "Top Next Highest Probability Tokens",
+            "name": "topK",
+            "type": "number",
+            "description": "Decode using top-k sampling: consider the set of top_k most probable tokens. Must be positive",
+            "step": 1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatGoogleGenerativeAI_0-input-topK-number",
+            "display": true
+          },
+          {
+            "label": "Safety Settings",
+            "name": "safetySettings",
+            "type": "array",
+            "description": "Safety settings for the model. Refer to the <a href=\"https://ai.google.dev/gemini-api/docs/safety-settings\">official guide</a> on how to use Safety Settings",
+            "array": [
+              {
+                "label": "Harm Category",
+                "name": "harmCategory",
+                "type": "options",
+                "options": [
+                  {
+                    "label": "Dangerous",
+                    "name": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "description": "Promotes, facilitates, or encourages harmful acts."
+                  },
+                  {
+                    "label": "Harassment",
+                    "name": "HARM_CATEGORY_HARASSMENT",
+                    "description": "Negative or harmful comments targeting identity and/or protected attributes."
+                  },
+                  {
+                    "label": "Hate Speech",
+                    "name": "HARM_CATEGORY_HATE_SPEECH",
+                    "description": "Content that is rude, disrespectful, or profane."
+                  },
+                  {
+                    "label": "Sexually Explicit",
+                    "name": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "description": "Contains references to sexual acts or other lewd content."
+                  },
+                  {
+                    "label": "Civic Integrity",
+                    "name": "HARM_CATEGORY_CIVIC_INTEGRITY",
+                    "description": "Election-related queries."
+                  }
+                ]
+              },
+              {
+                "label": "Harm Block Threshold",
+                "name": "harmBlockThreshold",
+                "type": "options",
+                "options": [
+                  {
+                    "label": "None",
+                    "name": "BLOCK_NONE",
+                    "description": "Always show regardless of probability of unsafe content"
+                  },
+                  {
+                    "label": "Only High",
+                    "name": "BLOCK_ONLY_HIGH",
+                    "description": "Block when high probability of unsafe content"
+                  },
+                  {
+                    "label": "Medium and Above",
+                    "name": "BLOCK_MEDIUM_AND_ABOVE",
+                    "description": "Block when medium or high probability of unsafe content"
+                  },
+                  {
+                    "label": "Low and Above",
+                    "name": "BLOCK_LOW_AND_ABOVE",
+                    "description": "Block when low, medium or high probability of unsafe content"
+                  },
+                  {
+                    "label": "Threshold Unspecified (Default Threshold)",
+                    "name": "HARM_BLOCK_THRESHOLD_UNSPECIFIED",
+                    "description": "Threshold is unspecified, block using default threshold"
+                  }
+                ]
+              }
+            ],
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatGoogleGenerativeAI_0-input-safetySettings-array",
+            "display": true
+          },
+          {
+            "label": "Base URL",
+            "name": "baseUrl",
+            "type": "string",
+            "description": "Base URL for the API. Leave empty to use the default.",
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatGoogleGenerativeAI_0-input-baseUrl-string",
+            "display": true
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Cache",
+            "name": "cache",
+            "type": "BaseCache",
+            "optional": true,
+            "id": "chatGoogleGenerativeAI_0-input-cache-BaseCache",
+            "display": true
+          }
+        ],
+        "inputs": {
+          "cache": "",
+          "modelName": "gemini-2.5-flash",
+          "customModelName": "",
+          "temperature": "0.5",
+          "streaming": true,
+          "allowImageUploads": "",
+          "thinkingBudget": "",
+          "thinkingLevel": "",
+          "maxOutputTokens": "",
+          "topP": "",
+          "topK": "",
+          "safetySettings": "",
+          "baseUrl": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "chatGoogleGenerativeAI_0-output-chatGoogleGenerativeAI-ChatGoogleGenerativeAI|ChatGoogleGenerativeAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatGoogleGenerativeAI",
+            "label": "ChatGoogleGenerativeAI",
+            "description": "Wrapper around Google Gemini large language models that use the Chat endpoint",
+            "type": "ChatGoogleGenerativeAI | ChatGoogleGenerativeAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 674,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": -2024.7555510456705,
+        "y": 24.327851681280947
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "retrieverTool_0",
+      "sourceHandle": "retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable",
+      "target": "toolAgent_0",
+      "targetHandle": "toolAgent_0-input-tools-Tool",
+      "type": "buttonedge",
+      "id": "retrieverTool_0-retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable-toolAgent_0-toolAgent_0-input-tools-Tool"
+    },
+    {
+      "source": "documentStoreVS_0",
+      "sourceHandle": "documentStoreVS_0-output-retriever-BaseRetriever",
+      "target": "retrieverTool_0",
+      "targetHandle": "retrieverTool_0-input-retriever-BaseRetriever",
+      "type": "buttonedge",
+      "id": "documentStoreVS_0-documentStoreVS_0-output-retriever-BaseRetriever-retrieverTool_0-retrieverTool_0-input-retriever-BaseRetriever"
+    },
+    {
+      "source": "ChatflowTool_0",
+      "sourceHandle": "ChatflowTool_0-output-ChatflowTool-ChatflowTool|Tool",
+      "target": "toolAgent_0",
+      "targetHandle": "toolAgent_0-input-tools-Tool",
+      "type": "buttonedge",
+      "id": "ChatflowTool_0-ChatflowTool_0-output-ChatflowTool-ChatflowTool|Tool-toolAgent_0-toolAgent_0-input-tools-Tool"
+    },
+    {
+      "source": "bufferWindowMemory_0",
+      "sourceHandle": "bufferWindowMemory_0-output-bufferWindowMemory-BufferWindowMemory|BaseChatMemory|BaseMemory",
+      "target": "toolAgent_0",
+      "targetHandle": "toolAgent_0-input-memory-BaseChatMemory",
+      "type": "buttonedge",
+      "id": "bufferWindowMemory_0-bufferWindowMemory_0-output-bufferWindowMemory-BufferWindowMemory|BaseChatMemory|BaseMemory-toolAgent_0-toolAgent_0-input-memory-BaseChatMemory"
+    },
+    {
+      "source": "chatGoogleGenerativeAI_0",
+      "sourceHandle": "chatGoogleGenerativeAI_0-output-chatGoogleGenerativeAI-ChatGoogleGenerativeAI|ChatGoogleGenerativeAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "target": "toolAgent_0",
+      "targetHandle": "toolAgent_0-input-model-BaseChatModel",
+      "type": "buttonedge",
+      "id": "chatGoogleGenerativeAI_0-chatGoogleGenerativeAI_0-output-chatGoogleGenerativeAI-ChatGoogleGenerativeAI|ChatGoogleGenerativeAI|BaseChatModel|BaseLanguageModel|Runnable-toolAgent_0-toolAgent_0-input-model-BaseChatModel"
+    }
+  ]
+}

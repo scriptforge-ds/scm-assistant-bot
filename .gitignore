@@ -9,6 +9,5 @@
 *.key
 *.pem
 *.p12
-*.json
 !package.json
 !package-lock.json
